@@ -33,6 +33,10 @@ all:: src/Makefile romdump/Makefile
 	cd src ; $(MAKE) $@
 	cd romdump ; $(MAKE) $@
 
+files::
+	echo bob
+	cd src ; $(MAKE) $@
+
 depend:: src/Makefile
 	cd src ; $(MAKE) $@
 
@@ -45,6 +49,9 @@ clean:: utils/Makefile src/Makefile \
 
 install install.man:: all
 	cd src ; $(MAKE) $@
+
+install::
+	echo "%config $(XAPPLOADDIR)/X48" > filelist
 
 x48.spec : rpm/x48.spec.in
 	sed -e 's/@VERSION@/$(VERSION_MAJOR).$(VERSION_MINOR).$(PATCHLEVEL)/' $< > $@
