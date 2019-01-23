@@ -1,6 +1,8 @@
 
-AC_INIT([x48],[0.6.2],[x48-bugs@gam3.net])
-AC_COPYRIGHT([Copyright (c) 2006 G. Allen Morris III])
+m4_include([version.m4])
+AC_INIT([x48],[VERSION_NUMBER],[x48-bugs@gam3.net])
+
+AC_COPYRIGHT([Copyright (c) 2006-2010 G. Allen Morris III])
 AC_CANONICAL_TARGET
 
 AC_PREREQ(2.59)
@@ -20,6 +22,8 @@ if test x$no_x = xyes ; then
 fi 
 X_LIBS="$X_LIBS -lX11"
 AC_SUBST(X_LIBS)
+
+PKG_PROG_PKG_CONFIG([0.20])
 
 # ********* readline library
 AC_ARG_ENABLE(readline,
@@ -87,9 +91,10 @@ AC_TYPE_SIZE_T
 AC_HEADER_TIME
 AC_STRUCT_TM
 
-AC_DEFINE_UNQUOTED([VERSION_MAJOR], 0, [The major version])
-AC_DEFINE_UNQUOTED([VERSION_MINOR], 6, [The minor version])
-AC_DEFINE_UNQUOTED([PATCHLEVEL], 1, [The patch level])
+AC_DEFINE([VERSION_MAJOR], _VERSION_MAJOR, [The major version number])
+AC_DEFINE([VERSION_MINOR], _VERSION_MINOR, [The minor version number])
+AC_DEFINE([PATCHLEVEL], _PATCHLEVEL, [The patch level])
+
 
 AC_DEFINE_UNQUOTED([COMPILE_TIME], "`date`", [Date program was compiled])
 AC_DEFINE([COMPILE_BY], ["G. Allen Morris III"], [Name of person that compiled this program])
@@ -102,11 +107,20 @@ AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_STAT
 AC_CHECK_FUNCS([bzero gethostname gettimeofday memset mkdir select strdup strrchr uname])
 
+PKG_CHECK_MODULES(APPDEFS, xt)
+AC_ARG_WITH([appdefaultdir],
+    [AC_HELP_STRING([--with-appdefaultdir=DIR],
+        [Xt app-defaults directory (default: from pkg-config)])],
+     [appdefaultdir="$withval"],
+     [appdefaultdir=`$PKG_CONFIG --variable=appdefaultdir xt`])
+AC_SUBST(appdefaultdir)
+
 AM_INIT_AUTOMAKE
 
 AC_CONFIG_FILES([Makefile
                  romdump/Makefile
                  src/x48.man
+		 rpm/x48.spec
                  src/Makefile])
 AC_OUTPUT
 

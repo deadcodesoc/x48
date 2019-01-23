@@ -50,6 +50,7 @@ x48_SOURCES = actions.c debugger.c device.c \
               small.h timer.h version.h X48.ad.h x48_x11.h \
 	      $(BITMAPS)
 
+
 dump2rom_SOURCES = dump2rom.c
 
 mkcard_SOURCES = mkcard.c
@@ -58,8 +59,10 @@ checkrom_SOURCES = checkrom.c romio.c
 
 man1_MANS = x48.man
 
-EXTRA_DIST = $(man1_MANS)
+EXTRA_DIST = $(man1_MANS) X48.ad
 
 INCLUDES = $(X_CFLAGS)
 
 x48_LDADD = $(X_LIBS)
+
+

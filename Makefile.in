@@ -14,6 +14,7 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
+
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -37,17 +38,19 @@ target_triplet = @target@
 subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
-	$(top_srcdir)/configure AUTHORS COPYING ChangeLog INSTALL NEWS \
-	config.guess config.sub depcomp install-sh ltmain.sh missing
+	$(top_srcdir)/configure $(top_srcdir)/rpm/x48.spec.in AUTHORS \
+	COPYING ChangeLog INSTALL NEWS config.guess config.sub depcomp \
+	install-sh ltmain.sh missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/version.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES =
+CONFIG_CLEAN_FILES = rpm/x48.spec
 CONFIG_CLEAN_VPATH_FILES =
 SOURCES =
 DIST_SOURCES =
@@ -58,6 +61,29 @@ RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	install-pdf-recursive install-ps-recursive install-recursive \
 	installcheck-recursive installdirs-recursive pdf-recursive \
 	ps-recursive uninstall-recursive
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
+am__install_max = 40
+am__nobase_strip_setup = \
+  srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
+am__nobase_strip = \
+  for p in $$list; do echo "$$p"; done | sed -e "s|$$srcdirstrip/||"
+am__nobase_list = $(am__nobase_strip_setup); \
+  for p in $$list; do echo "$$p $$p"; done | \
+  sed "s| $$srcdirstrip/| |;"' / .*\//!s/ .*/ ./; s,\( .*\)/[^/]*$$,\1,' | \
+  $(AWK) 'BEGIN { files["."] = "" } { files[$$2] = files[$$2] " " $$1; \
+    if (++n[$$2] == $(am__install_max)) \
+      { print $$2, files[$$2]; n[$$2] = 0; files[$$2] = "" } } \
+    END { for (dir in files) print dir, files[dir] }'
+am__base_list = \
+  sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
+  sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
+am__installdirs = "$(DESTDIR)$(appdefaultdir)"
+DATA = $(appdefault_DATA)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 AM_RECURSIVE_TARGETS = $(RECURSIVE_TARGETS:-recursive=) \
@@ -108,6 +134,8 @@ distuninstallcheck_listfiles = find . -type f -print
 distcleancheck_listfiles = find . -type f -print
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
+APPDEFS_CFLAGS = @APPDEFS_CFLAGS@
+APPDEFS_LIBS = @APPDEFS_LIBS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -147,6 +175,7 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PKG_CONFIG = @PKG_CONFIG@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -166,6 +195,7 @@ am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
 am__tar = @am__tar@
 am__untar = @am__untar@
+appdefaultdir = @appdefaultdir@
 bindir = @bindir@
 build = @build@
 build_alias = @build_alias@
@@ -212,6 +242,12 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = dejagnu
 SUBDIRS = src romdump
+EXTRA_DIST = rpm/x48.spec \
+ debian/changelog debian/compat debian/control debian/copyright \
+ debian/dirs debian/docs debian/menu debian/README.Debian debian/rules
+
+appdefault_DATA = X48
+DISTCHECK_CONFIGURE_FLAGS = --with-appdefaultdir='$${datadir}/X11/app-defaults'
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -267,6 +303,28 @@ $(srcdir)/config.h.in:  $(am__configure_deps)
 
 distclean-hdr:
 	-rm -f config.h stamp-h1
+rpm/x48.spec: $(top_builddir)/config.status $(top_srcdir)/rpm/x48.spec.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+install-appdefaultDATA: $(appdefault_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(appdefaultdir)" || $(MKDIR_P) "$(DESTDIR)$(appdefaultdir)"
+	@list='$(appdefault_DATA)'; test -n "$(appdefaultdir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(appdefaultdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(appdefaultdir)" || exit $$?; \
+	done
+
+uninstall-appdefaultDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(appdefault_DATA)'; test -n "$(appdefaultdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(appdefaultdir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(appdefaultdir)" && rm -f $$files
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.
@@ -618,9 +676,12 @@ distcleancheck: distclean
 check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) check-DEJAGNU
 check: check-recursive
-all-am: Makefile config.h
+all-am: Makefile $(DATA) config.h
 installdirs: installdirs-recursive
 installdirs-am:
+	for dir in "$(DESTDIR)$(appdefaultdir)"; do \
+	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
+	done
 install: install-recursive
 install-exec: install-exec-recursive
 install-data: install-data-recursive
@@ -668,7 +729,7 @@ info: info-recursive
 
 info-am:
 
-install-data-am:
+install-data-am: install-appdefaultDATA
 
 install-dvi: install-dvi-recursive
 
@@ -714,7 +775,7 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am:
+uninstall-am: uninstall-appdefaultDATA
 
 .MAKE: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) all check-am \
 	ctags-recursive install-am install-strip tags-recursive
@@ -726,15 +787,19 @@ uninstall-am:
 	distcheck distclean distclean-DEJAGNU distclean-generic \
 	distclean-hdr distclean-tags distcleancheck distdir \
 	distuninstallcheck dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am install-man \
-	install-pdf install-pdf-am install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	installdirs-am maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-generic pdf pdf-am ps ps-am tags \
-	tags-recursive uninstall uninstall-am
+	install install-am install-appdefaultDATA install-data \
+	install-data-am install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am install-info \
+	install-info-am install-man install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs installdirs-am maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-generic pdf \
+	pdf-am ps ps-am tags tags-recursive uninstall uninstall-am \
+	uninstall-appdefaultDATA
 
+
+X48 : src/X48.ad
+	cp $< $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

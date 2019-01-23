@@ -41,7 +41,8 @@ subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(srcdir)/x48.man.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/version.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -110,6 +111,8 @@ CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
+APPDEFS_CFLAGS = @APPDEFS_CFLAGS@
+APPDEFS_LIBS = @APPDEFS_LIBS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -149,6 +152,7 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PKG_CONFIG = @PKG_CONFIG@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -168,6 +172,7 @@ am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
 am__tar = @am__tar@
 am__untar = @am__untar@
+appdefaultdir = @appdefaultdir@
 bindir = @bindir@
 build = @build@
 build_alias = @build_alias@
@@ -263,7 +268,7 @@ dump2rom_SOURCES = dump2rom.c
 mkcard_SOURCES = mkcard.c
 checkrom_SOURCES = checkrom.c romio.c
 man1_MANS = x48.man
-EXTRA_DIST = $(man1_MANS)
+EXTRA_DIST = $(man1_MANS) X48.ad
 INCLUDES = $(X_CFLAGS)
 x48_LDADD = $(X_LIBS)
 all: all-am

@@ -156,10 +156,10 @@
 /* Version number of package */
 #undef VERSION
 
-/* The major version */
+/* The major version number */
 #undef VERSION_MAJOR
 
-/* The minor version */
+/* The minor version number */
 #undef VERSION_MINOR
 
 /* Define to 1 if the X Window System is missing or not being used. */
