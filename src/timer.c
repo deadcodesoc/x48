@@ -140,7 +140,7 @@ set_accesstime()
    */
   (void)time(&gmt);
   ltm = localtime(&gmt);
-#ifdef SYSV_TIME
+#if defined(SYSV_TIME) || defined(__sgi)
   systime_offset = timezone;
   if( ltm->tm_isdst )
     systime_offset -= 3600;
@@ -509,7 +509,7 @@ get_t1_t2()
     {
       set_0_time += adj_time;
       time_offset += adj_time;
-      access_time - adj_time;
+      access_time -= adj_time;
   
 #ifdef DEBUG_TIMER_ADJUST
       fprintf(stderr, "Time adjusted by ");

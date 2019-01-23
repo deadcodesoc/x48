@@ -2953,7 +2953,7 @@ char **argv;
   xswa.bit_gravity = NorthWestGravity;
   xswa.event_mask = KeyPressMask | KeyReleaseMask | ButtonPressMask |
                     ButtonReleaseMask | ExposureMask | KeymapStateMask |
-                    EnterWindowMask | StructureNotifyMask;
+                    EnterWindowMask | StructureNotifyMask | FocusChangeMask;
   mask = CWBackPixel | CWBorderPixel | CWBackingStore | CWEventMask |
          CWBitGravity | CWWinGravity;
   XChangeWindowAttributes(dpy, mainW, mask, &xswa);
@@ -3639,6 +3639,7 @@ int     buflen;
       wake = 1;
       break;
     case XK_KP_Decimal:
+    case XK_KP_Separator:
     case XK_period:
       key_event(BUTTON_PERIOD, xev);
       wake = 1;
@@ -4396,6 +4397,11 @@ GetEvent()
 		    }
 		    last_button = -1;
 		}
+	      break;
+
+	    case FocusOut:
+	      first_key = 0;
+	      button_release_all();
 	      break;
 
 	    case MappingNotify:

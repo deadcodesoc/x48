@@ -1919,10 +1919,7 @@ debug ()
 	      free (cl);
               cl = (char *) 0;
             }
-	  if (old_line)
-	    cl = strcpy ((char *) malloc (strlen (old_line)), old_line);
-	  else
-	    cl = strcpy ((char *) malloc (strlen ("(null)")), "(null)");
+	  cl = strdup (old_line == NULL ? "(null)" : old_line);
 	}
       else
 	{
@@ -1936,8 +1933,8 @@ debug ()
 	      free (old_line);
               old_line = (char *) 0;
 	    }
-	  cl = strcpy ((char *) malloc (strlen (rl)), rl);
-	  old_line = strcpy ((char *) malloc (strlen (rl)), rl);
+	  cl = strdup (rl);
+	  old_line = strdup (rl); 
 #ifdef HAVE_READLINE
 	  add_history (rl);
 #endif
