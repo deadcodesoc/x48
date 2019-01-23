@@ -120,6 +120,7 @@ do_in()
 #ifdef DEBUG_INOUT
   fprintf(stderr, "saturn.OUT=%.3x, saturn.IN=%.4x\n", out, in);
 #endif
+
   for (i = 0; i < 4; i++) {
     saturn.IN[i] = in & 0xf;
     in >>= 4;
@@ -632,6 +633,7 @@ do_shutdown()
         saturn.timer2 = ticks.t2_ticks;
       }
       saturn.timer1 = set_t1 - ticks.t1_ticks;
+      set_t1 = ticks.t1_ticks;
 
       interrupt_called = 0;
       if (GetEvent()) {

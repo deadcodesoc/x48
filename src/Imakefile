@@ -22,10 +22,10 @@
 
 #include "../config.h"
 
-            BIN = $(TOP)/bin
+            TOP = ..
+            BIN = .
           UTILS = $(TOP)/utils
-       READLINE = $(TOP)/readline
-    READLINELIB = $(READLINE)/libreadline.a
+    READLINELIB = -lreadline
 EXTRA_LIBRARIES =
 
 #ifdef HAVE_XSHM
@@ -37,19 +37,15 @@ EXTRA_LIBRARIES =
 #ifdef HAVE_READLINE
 # define READLINE_DEF -DHAVE_READLINE
        DEPLIBS1 = $(DEPLIBS) $(READLINELIB)
-        X48LIBS = $(XLIB) $(READLINELIB)
+        X48LIBS = $(XLIB) $(READLINELIB) $(EXTRA_LIBRARIES)
 #else
 # define READLINE_DEF
        DEPLIBS1 = $(DEPLIBS)
-        X48LIBS = $(XLIB)
+        X48LIBS = $(XLIB) $(EXTRA_LIBRARIES)
 #endif
 
 #ifndef UNIX_DEF
 # define UNIX_DEF
-#endif
-
-#ifdef CC_DEF
-             CC = CC_DEF
 #endif
 
 #ifdef CDEBUGFLAGS_DEF
@@ -68,7 +64,7 @@ EXTRA_LIBRARIES =
           TARS1 = actions.c debugger.c device.c disasm.c emulate.c \
                   errors.c init.c lcd.c main.c memory.c options.c \
                   register.c resources.c romio.c rpl.c serial.c timer.c \
-                  x48_x11.c 
+                  x48_x11.c
           SRCS1 = actions.c debugger.c device.c disasm.c emulate.c \
                   errors.c init.c lcd.c main.c memory.c options.c \
                   register.c resources.c romio.c rpl.c serial.c timer.c \
@@ -83,7 +79,10 @@ EXTRA_LIBRARIES =
           OBJS3 = checkrom.o romio.o
           SRCS4 = mkcard.c
           OBJS4 = mkcard.o
-             CO = co -l
+           SRSS = $(SRCS1) $(SRCS2) $(SRCS3) $(SRCS4)
+           OBJS = $(OBJS1) $(OBJS2) $(OBJS3) $(OBJS4)
+       PROGRAMS = ProgramTargetName(xterm) ProgramTargetName(dump2rom) \
+                  ProgramTargetName(checkrom) ProgramTargetName(mkcard)
        TARFILES = Imakefile X48.ad $(TARS1) $(SRCS2) $(SRCS3) $(SRCS4) $(HDRS)
 
 all:: $(BIN)/x48 $(BIN)/dump2rom $(BIN)/checkrom $(BIN)/mkcard
@@ -95,24 +94,19 @@ depend:: version.c X48.ad.h
 echo_tarfiles:
 	@echo $(TARFILES)
 
-#ifndef ComplexProgramTarget_4
-#define ComplexProgramTarget_4(program,locallib,syslib)                 @@\
-program: $(OBJS4) $(DEPLIBS4)                                           @@\
-	RemoveTargetProgram($@)                                         @@\
-	$(CC) -o $@ $(LDOPTIONS) $(OBJS4) locallib $(LDLIBS) syslib $(EXTRA_LOAD_FLAGS) @@\
-                                                                        @@\
-SaberProgramTarget(program,$(SRCS4),$(OBJS4),locallib,syslib)           @@\
-                                                                        @@\
-InstallProgram(program,$(BINDIR))                                       @@\
-InstallManPage(program,$(MANDIR))
-#endif /* ComplexProgramTarget_4 */
+NormalProgramTarget($(BIN)/x48, $(OBJS1), /**/, $(X48LIBS), /**/)
+NormalProgramTarget($(BIN)/dump2rom, dump2rom.o, /**/, /**/, /**/ )
+NormalProgramTarget($(BIN)/checkrom, checkrom.o romio.o, /**/, /**/, /**/ )
+NormalProgramTarget($(BIN)/mkcard, mkcard.o, /**/, /**/, /**/ )
 
-ComplexProgramTarget_1($(BIN)/x48, $(X48LIBS),)
-ComplexProgramTarget_2($(BIN)/dump2rom,,)
-ComplexProgramTarget_3($(BIN)/checkrom,,)
-ComplexProgramTarget_4($(BIN)/mkcard,,)
+InstallProgram(x48,$(BINDIR))
+InstallProgram(dump2rom,$(BINDIR))
+InstallProgram(checkrom,$(BINDIR))
+InstallProgram(mkcard,$(BINDIR))
 
 InstallAppDefaults(X48)
+
+DependTarget()
 
 x48_x11.o: X48.ad.h
 
