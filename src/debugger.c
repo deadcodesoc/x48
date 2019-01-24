@@ -1528,7 +1528,7 @@ struct se {
   struct se *se_next;
 };
 
-char *
+void
 #ifdef __FunctionProto__
 get_stack (void)
 #else
