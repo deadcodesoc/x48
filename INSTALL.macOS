@@ -1,0 +1,23 @@
+Instructions to build x48 on macOS
+==================================
+
+Tools you will need installed:
+
+* autoconf (tested with version 2.69)
+* automake (tested with version 1.16.1)
+* pkg-config (tested with version 0.29.2)
+
+Run 'autogen.sh' and then 'configure'.
+
+If 'Xt' is not found...
+
+checking for xt... no
+configure: error: Package requirements (xt) were not met:
+No package 'xt' found
+
+Then instruct 'pkg-config' to find the xt.pc file on /opt/X11/...
+
+$ export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig/
+
+Then run again 'configure' and everything should run fine.
+Now proceed with 'make' to compile everything and 'sudo make install'.
