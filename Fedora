@@ -1,0 +1,27 @@
+Fedora
+======
+
+Build
+-----
+
+$ ./configure
+...
+checking for X... no
+configure: error: X development libraries not found
+
+$ sudo yum groupinstall "X Software Development"
+
+Running
+-------
+
+$ x48
+x48: FATAL ERROR, exit.
+  - can't load font '-*-fixed-bold-r-normal-*-14-*-*-*-*-*-iso8859-1'
+  - Please change resource 'smallLabelFont'
+...
+x48: FATAL ERROR, exit.
+  - can't load font '-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-iso8859-1'
+  - Please change resource 'connectionFont'
+...
+
+$ sudo dnf install 'xorg-x11-fonts*'
