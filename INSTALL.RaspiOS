@@ -1,0 +1,17 @@
+RaspiOS
+=======
+
+Readline support
+----------------
+
+$ sudo apt install libreadline-dev
+
+X11 MIT shared memory
+---------------------
+
+$ sudo apt install libxext-dev
+
+Fonts (bitmap)
+--------------
+
+$ sudo apt install xfonts-base
