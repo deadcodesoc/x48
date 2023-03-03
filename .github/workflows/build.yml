@@ -19,3 +19,10 @@ jobs:
       run: make
     - name: make check
       run: make check
+    - uses: actions/upload-artifact@v3
+      with:
+        name: X48
+        path: X48
+    - uses: actions/download-artifact@v3
+      with:
+        name: X48
