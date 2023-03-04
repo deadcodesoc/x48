@@ -1,4 +1,4 @@
-name: C/C++ CI
+name: Build x48
 
 on:
   push:
@@ -21,8 +21,8 @@ jobs:
       run: make check
     - uses: actions/upload-artifact@v3
       with:
-        name: X48
-        path: X48
+        name: x48-binary
+        path: src/x48
     - uses: actions/download-artifact@v3
       with:
-        name: X48
+        name: x48-binary
