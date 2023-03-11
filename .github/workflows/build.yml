@@ -32,7 +32,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: configure
-      run: ./configure
+      run: |
+        export PKG_CONFIG_PATH=/opt/X11/share/pkgconfig:/opt/X11/lib/pkgconfig
+        ./configure
     - name: make
       run: make
     - name: make check
