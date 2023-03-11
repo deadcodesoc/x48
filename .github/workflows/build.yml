@@ -31,12 +31,10 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v3
+    - name: install Xt
+      run: brew install libxt
     - name: configure
-      run: |
-        export PKG_CONFIG_PATH=/opt/X11/share/pkgconfig:/opt/X11/lib/pkgconfig
-        mdfind -name xt.pc
-        exit 1
-        ./configure
+      run: ./configure
     - name: make
       run: make
     - name: make check
