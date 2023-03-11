@@ -34,8 +34,8 @@ jobs:
     - name: configure
       run: |
         export PKG_CONFIG_PATH=/opt/X11/share/pkgconfig:/opt/X11/lib/pkgconfig
-        find /opt/X11/lib/pkgconfig
-        echo $PKG_CONFIG_PATH
+        mdfind -name xt.pc
+        exit 1
         ./configure
     - name: make
       run: make
