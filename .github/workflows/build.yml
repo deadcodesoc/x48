@@ -1,0 +1,53 @@
+name: Build x48
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: configure
+      run: ./configure
+    - name: make
+      run: make
+    - name: make check
+      run: make check
+    - uses: actions/upload-artifact@v3
+      with:
+        name: x48-linux
+        path: |
+          src/checkrom
+          src/dump2rom
+          src/mkcard
+          src/x48
+        if-no-files-found: error
+    - uses: actions/download-artifact@v3
+      with:
+        name: x48-linux
+  build-mac:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: install Xt
+      run: brew install libxt
+    - name: configure
+      run: ./configure
+    - name: make
+      run: make
+    - name: make check
+      run: make check
+    - uses: actions/upload-artifact@v3
+      with:
+        name: x48-macos
+        path: |
+          src/checkrom
+          src/dump2rom
+          src/mkcard
+          src/x48
+        if-no-files-found: error
+    - uses: actions/download-artifact@v3
+      with:
+        name: x48-macos
