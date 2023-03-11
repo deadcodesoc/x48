@@ -21,8 +21,9 @@ jobs:
       run: make check
     - uses: actions/upload-artifact@v3
       with:
-        name: x48-binary
-        path: src/x48
+        name: x48-linux
+        path: src/(checkrom|dump2rom|mkcard|x48)
+        if-no-files-found: error
     - uses: actions/download-artifact@v3
       with:
-        name: x48-binary
+        name: x48-linux
